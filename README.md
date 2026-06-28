@@ -1,0 +1,1 @@
+# This repository is intended for homework assignments as part of the "QA.GURU Python" course. 
