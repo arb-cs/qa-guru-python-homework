@@ -19,6 +19,6 @@ def greet(name):
     print("Привет," + name)
 
 
-print("Hello, README!")
 greet("мир")
+print("Hello, README!")
 print(add(2, 2))
