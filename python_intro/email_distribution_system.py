@@ -1,5 +1,4 @@
 import re
-
 from datetime import datetime
 
 
@@ -46,8 +45,7 @@ def check_empty_fields(subject: str, body: str) -> tuple[bool, bool]:
     Возвращает кортеж (is_subject_empty, is_body_empty).
     True, если поле пустое.
     """
-    return (not subject or not subject.strip(),
-            not body or not body.strip())
+    return (not subject or not subject.strip(), not body or not body.strip())
 
 
 def mask_sender_email(login: str, domain: str) -> str:
@@ -81,7 +79,7 @@ def create_email(sender: str, recipient: str, subject: str, body: str) -> dict:
         "sender": sender,
         "recipient": recipient,
         "subject": subject,
-        "body": body
+        "body": body,
     }
 
     return email
@@ -106,7 +104,13 @@ def extract_login_domain(address: str) -> tuple[str, str]:
     return parts[0], parts[1]
 
 
-def sender_email(recipient_list: list[str], subject: str, message: str, *, sender="default@study.com") -> list[dict]:
+def sender_email(
+    recipient_list: list[str],
+    subject: str,
+    message: str,
+    *,
+    sender="default@study.com",
+) -> list[dict]:
     if not recipient_list:
         raise ValueError("The recipient list is empty!")
 
@@ -125,7 +129,9 @@ def sender_email(recipient_list: list[str], subject: str, message: str, *, sende
 
     result = []
     for recipient in valid_recipients:
-        email = create_email(sender, normalize_addresses(recipient), subject, body)
+        email = create_email(
+            sender, normalize_addresses(recipient), subject, body
+        )
         email = add_send_date(email)
 
         login, domain = extract_login_domain(email["sender"])
@@ -146,14 +152,17 @@ if __name__ == "__main__":
         "peter_parker@yandex.ru",
         "tormund.com",
         " ",
-        "nick@.ru"
+        "nick@.ru",
     ]
     subject = "Project X: planning integration testing scenarios"
-    message = ("Hi! We would like to discuss test-cases for integration testing.\n"
-               "When would be the best time for you to meet?\tYours, sincerely Alex"
+    message = (
+        "Hi! We would like to discuss test-cases for integration testing.\n"
+        "When would be the best time for you to meet?\tYours, sincerely Alex"
     )
 
-    emails = sender_email(recipients, subject, message, sender="alex.m@gmail.com")
+    emails = sender_email(
+        recipients, subject, message, sender="alex.m@gmail.com"
+    )
 
     for email in emails:
         print(email)

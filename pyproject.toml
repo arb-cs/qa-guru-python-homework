@@ -1,0 +1,24 @@
+[tool.black]
+line-length = 80
+exclude = '''
+/(
+    \.git
+  | \.venv
+  | __pycache__
+  | .pytest_cache
+  | allure-results
+  | allure-report
+)/
+'''
+
+[tool.isort]
+profile = "black"
+line_length = 80
+skip = [
+    "git",
+    ".venv",
+    "__pycache__",
+    ".pytest_cache",
+    "allure-results",
+    "allure-report"
+]
