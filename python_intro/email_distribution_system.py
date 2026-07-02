@@ -45,7 +45,7 @@ def check_empty_fields(subject: str, body: str) -> tuple[bool, bool]:
     Возвращает кортеж (is_subject_empty, is_body_empty).
     True, если поле пустое.
     """
-    return (not subject or not subject.strip(), not body or not body.strip())
+    return not subject or not subject.strip(), not body or not body.strip()
 
 
 def mask_sender_email(login: str, domain: str) -> str:
@@ -59,7 +59,7 @@ def get_correct_email(email_list: list[str]) -> list[str]:
     """
     Возвращает список корректных email.
     """
-    email_regex = re.compile(r"^[^@\s]+@[^@\s]+\.[a-zA-Z0-9]+$")
+    email_regex = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}")
     allowed_domains = (".com", ".ru", ".net")
 
     result = []
@@ -140,7 +140,7 @@ def sender_email(
         email = add_short_body(email)
         email["sent_text"] = build_sent_text(email)
 
-        result.append(email["sent_text"])
+        result.append(email)
 
     return result
 
@@ -153,6 +153,9 @@ if __name__ == "__main__":
         "tormund.com",
         " ",
         "nick@.ru",
+        "hello@corp.ru",
+        "user@site.net",
+        "user@domain.com",
     ]
     subject = "Project X: planning integration testing scenarios"
     message = (
