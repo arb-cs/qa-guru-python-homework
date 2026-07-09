@@ -1,4 +1,5 @@
 import re
+import string
 from datetime import datetime
 
 
@@ -59,13 +60,64 @@ def get_correct_email(email_list: list[str]) -> list[str]:
     """
     Возвращает список корректных email.
     """
-    email_regex = re.compile(r"[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,7}")
     allowed_domains = (".com", ".ru", ".net")
+    allowed_chars = set(string.ascii_letters + string.digits)
+    allowed_local_symbols = set("!#$%&'*+-/=?^_{|}~.")
+    allowed_domain_symbols = set("-.")
 
     result = []
+
     for email in email_list:
-        if email_regex.fullmatch(email) and email.endswith(allowed_domains):
-            result.append(email)
+        if not email:
+            continue
+
+        email = email.strip()
+
+        if "@" not in email or len(email) > 254:
+            continue
+        if not email.endswith(allowed_domains):
+            continue
+        if email.startswith("."):
+            continue
+
+        try:
+            local, domain = email.rsplit("@", 1)
+        except ValueError:
+            continue
+
+        if (
+            not local
+            or local.startswith(".")
+            or local.endswith(".")
+            or ".." in local
+        ):
+            continue
+
+        for char in local:
+            if char not in allowed_chars and char not in allowed_local_symbols:
+                break
+        else:
+            domain_labels = domain.split(".")
+            if any(not label for label in domain_labels):
+                continue
+
+            valid_domain = True
+            for label in domain_labels:
+                if label.startswith("-") or label.endswith("-"):
+                    valid_domain = False
+                    break
+                for char in label:
+                    if (
+                        char not in allowed_chars
+                        and char not in allowed_domain_symbols
+                    ):
+                        valid_domain = False
+                        break
+                if not valid_domain:
+                    break
+
+            if valid_domain:
+                result.append(email)
 
     return result
 
@@ -148,14 +200,16 @@ def sender_email(
 if __name__ == "__main__":
     recipients = [
         "alex.m@gmail.com",
-        "john.doe@x.net",
-        "peter_parker@yandex.ru",
+        "johndoe@x.net",
+        "peter_parker@yandex.co.ru",
         "tormund.com",
-        " ",
+        "tormund@realnorth.org" " ",
         "nick@.ru",
-        "hello@corp.ru",
+        "  hello@corp.ru  ",
         "user@site.net",
         "user@domain.com",
+        "user@??domain.ru",
+        "user.@domain.ru" "..user@domain.com",
     ]
     subject = "Project X: planning integration testing scenarios"
     message = (
