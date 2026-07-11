@@ -61,7 +61,7 @@ def get_correct_email(email_list: list[str]) -> list[str]:
     Возвращает список корректных email.
     """
     allowed_domains = (".com", ".ru", ".net")
-    allowed_chars = set(string.ascii_letters + string.digits)
+    allowed_chars = set(string.ascii_lowercase + string.digits)
     allowed_local_symbols = set("!#$%&'*+-/=?^_{|}~.")
     allowed_domain_symbols = set("-.")
 
@@ -71,26 +71,20 @@ def get_correct_email(email_list: list[str]) -> list[str]:
         if not email:
             continue
 
-        email = email.strip()
+        email = email.strip().lower()
 
-        if "@" not in email or len(email) > 254:
+        if "@" not in email or email.count("@") > 1 or len(email) > 254:
             continue
         if not email.endswith(allowed_domains):
             continue
-        if email.startswith("."):
+        if email.startswith((".", "@")):
+            continue
+        if email.endswith((".", "@")):
             continue
 
-        try:
-            local, domain = email.rsplit("@", 1)
-        except ValueError:
-            continue
+        local, domain = email.rsplit("@")
 
-        if (
-            not local
-            or local.startswith(".")
-            or local.endswith(".")
-            or ".." in local
-        ):
+        if not local or local.endswith(".") or ".." in local:
             continue
 
         for char in local:
@@ -202,14 +196,18 @@ if __name__ == "__main__":
         "alex.m@gmail.com",
         "johndoe@x.net",
         "peter_parker@yandex.co.ru",
-        "tormund.com",
-        "tormund@realnorth.org" " ",
-        "nick@.ru",
         "  hello@corp.ru  ",
         "user@site.net",
         "user@domain.com",
-        "user@??domain.ru",
-        "user.@domain.ru" "..user@domain.com",
+        "tormund@realnorth.org",
+        "@example.com",
+        "nick@.ru",
+        "username@-example.com" "user@??domain.ru",
+        "user.@domain.ru",
+        "..user@domain.com",
+        "test@@yahoo.com",
+        "@user.@domain.ru",
+        "",
     ]
     subject = "Project X: planning integration testing scenarios"
     message = (
