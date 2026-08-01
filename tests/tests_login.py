@@ -1,70 +1,54 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver
+import pytest
+
+from pages.login_page import LoginPage
 
 
-def test_unsuccessful_login(driver: WebDriver):
-    driver.get("https://qa-guru.github.io/one-page-form/login.html")
+# All these tests are quite similar. Parametrize?
+@pytest.mark.regression
+@pytest.mark.authorization
+def test_unsuccessful_login(login_page: LoginPage):
+    login_page.visit()
 
-    login_input = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'login-input']")
-    login_input.send_keys("johndoe@gmail.com")
+    login_page.fill_login_form("johndoe@gmail.com", "JoH!?Do1+")
+    login_page.click_login_button()
 
-    password_input = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'password-input']")
-    password_input.send_keys("JoH!?Do1+")
-
-    login_button = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'submit-button']")
-    login_button.click()
-
-    error_message = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'error-message']")
-
-    assert error_message.text == "Wrong login or password"
+    assert login_page.check_error_message("Wrong login or password")
 
 
-def test_submit_empty_login_form(driver: WebDriver):
-    driver.get("https://qa-guru.github.io/one-page-form/login.html")
+@pytest.mark.regression
+@pytest.mark.authorization
+def test_submit_empty_login_form(login_page: LoginPage):
+    login_page.visit()
 
-    login_input = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'login-input']")
-    login_input.send_keys("")
+    login_page.fill_login_form("", "")
+    login_page.click_login_button()
 
-    password_input = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'password-input']")
-    password_input.send_keys("")
-
-    login_button = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'submit-button']")
-    login_button.click()
-
-    error_message = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'error-message']")
-
-    assert error_message.text == "Login and password are required (minimum 3 and 6 characters)"
+    assert login_page.check_error_message(
+        "Login and password are required (minimum 3 and 6 characters)"
+    )
 
 
-def test_submit_empty_login_input(driver: WebDriver):
-    driver.get("https://qa-guru.github.io/one-page-form/login.html")
+@pytest.mark.regression
+@pytest.mark.authorization
+def test_submit_empty_login_input(login_page: LoginPage):
+    login_page.visit()
 
-    login_input = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'login-input']")
-    login_input.send_keys("")
+    login_page.fill_login_form("", "JoH!?Do1+")
+    login_page.click_login_button()
 
-    password_input = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'password-input']")
-    password_input.send_keys("JoH!?Do1+")
-
-    login_button = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'submit-button']")
-    login_button.click()
-
-    error_message = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'error-message']")
-
-    assert error_message.text == "Login is required (minimum 3 characters)"
+    assert login_page.check_error_message(
+        "Login is required (minimum 3 characters)"
+    )
 
 
-def test_submit_empty_password_input(driver: WebDriver):
-    driver.get("https://qa-guru.github.io/one-page-form/login.html")
+@pytest.mark.regression
+@pytest.mark.authorization
+def test_submit_empty_password_input(login_page: LoginPage):
+    login_page.visit()
 
-    login_input = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'login-input']")
-    login_input.send_keys("johndoe")
+    login_page.fill_login_form("johndoe", "")
+    login_page.click_login_button()
 
-    password_input = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'password-input']")
-    password_input.send_keys("")
-
-    login_button = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'submit-button']")
-    login_button.click()
-
-    error_message = driver.find_element(By.CSS_SELECTOR, "[data-testid = 'error-message']")
-
-    assert error_message.text == "Password is required (minimum 6 characters)"
+    assert login_page.check_error_message(
+        "Password is required (minimum 6 characters)"
+    )

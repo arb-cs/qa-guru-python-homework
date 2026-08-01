@@ -13,7 +13,9 @@ driver.maximize_window()
 
 try:
     # 1. Открываем исходную страницу
-    driver.get("https://qa-guru.github.io/one-page-form/automation-practice-form.html")
+    driver.get(
+        "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
+    )
 
     # Сохраняем дескриптор ПЕРВОГО (оригинального) окна
     original_window = driver.current_window_handle

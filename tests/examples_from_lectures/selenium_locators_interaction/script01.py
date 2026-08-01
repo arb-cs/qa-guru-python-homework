@@ -9,7 +9,9 @@ driver.maximize_window()
 try:
     # 1. Открываем целевую страницу учебной формы
     print("Открываем страницу формы...")
-    driver.get("https://qa-guru.github.io/one-page-form/automation-practice-form.html")
+    driver.get(
+        "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
+    )
     time.sleep(4)  # Пауза для наглядности студентам
 
     # 2. Демонстрация REFRESH (Обновление страницы)

@@ -23,7 +23,9 @@ try:
     driver.find_element(By.ID, "userName").send_keys("Иван Иванов")
     driver.find_element(By.ID, "userEmail").send_keys("ivan@example.com")
     driver.find_element(By.ID, "currentAddress").send_keys("ул. Ленина, дом 1")
-    driver.find_element(By.ID, "permanentAddress").send_keys("ул. Пушкина, дом 10")
+    driver.find_element(By.ID, "permanentAddress").send_keys(
+        "ул. Пушкина, дом 10"
+    )
 
     # Скролл до кнопки и клик
     submit_button = driver.find_element(By.ID, "submit")
@@ -38,11 +40,16 @@ try:
         driver,
         timeout=10,
         poll_frequency=0.5,
-        ignored_exceptions=[NoSuchElementException, StaleElementReferenceException]
+        ignored_exceptions=[
+            NoSuchElementException,
+            StaleElementReferenceException,
+        ],
     )
 
     # 4. Ожидание появления блока с результатами (id="output")
-    output_block = fluent_wait.until(EC.visibility_of_element_located((By.ID, "output")))
+    output_block = fluent_wait.until(
+        EC.visibility_of_element_located((By.ID, "output"))
+    )
 
     time.sleep(5)
 

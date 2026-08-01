@@ -1,94 +1,63 @@
-from selenium.webdriver.common.by import By
-from selenium.webdriver.remote.webdriver import WebDriver
+import pytest
+
+from pages.text_box_page import TextBoxPage
 
 
-def test_fill_text_box(driver: WebDriver):
-    driver.get("https://qa-guru.github.io/one-page-form/text-box.html")
+@pytest.mark.regression
+def test_fill_text_box(text_box_page: TextBoxPage):
+    # Arrange
+    text_box_page.visit()
 
-    full_name_field = driver.find_element(By.ID, "userName")
-    full_name_field.send_keys("John Doe")
-
-    email_field = driver.find_element(By.ID, "userEmail")
-    email_field.send_keys("john_doe@gmail.com")
-
-    current_address_area = driver.find_element(By.ID, "currentAddress")
-    current_address_area.send_keys("740 Route 202 Middletown, NY 10940")
-
-    permanent_address_area = driver.find_element(By.ID, "permanentAddress")
-    permanent_address_area.send_keys(
-        "9476 Virginia Avenue South Richmond Hill, NY 11419"
+    # Act
+    text_box_page.fill_text_box(
+        fullname="John Doe",
+        email="john_doe@gmail.com",
+        current_address="740 Route 202 Middletown, NY 10940",
+        permanent_address="9476 Virginia Avenue South Richmond Hill, NY 11419",
     )
+    text_box_page.click_submit_button()
 
-    submit_button = driver.find_element(By.ID, "submit")
-    submit_button.click()
-
-    name_result_box = driver.find_element(By.ID, "name")
-    email_result_box = driver.find_element(By.ID, "email")
-    current_address_result_box = driver.find_element(
-        By.CSS_SELECTOR, "p#currentAddress"
+    # Assert
+    assert "John Doe" in text_box_page.get_text(text_box_page.NAME_RESULT_BOX)
+    assert "john_doe@gmail.com" in text_box_page.get_text(
+        text_box_page.EMAIL_RESULT_BOX
     )
-    permanent_address_result_box = driver.find_element(
-        By.CSS_SELECTOR, "p#permanentAddress"
-    )
-
-    assert "John Doe" in name_result_box.text
-    assert "john_doe@gmail.com" in email_result_box.text
-    assert (
-        "740 Route 202 Middletown, NY 10940" in current_address_result_box.text
+    assert "740 Route 202 Middletown, NY 10940" in text_box_page.get_text(
+        text_box_page.CURRENT_ADDRESS_RESULT_BOX
     )
     assert (
         "9476 Virginia Avenue South Richmond Hill, NY 11419"
-        in permanent_address_result_box.text
+        in text_box_page.get_text(text_box_page.PERMANENT_ADDRESS_RESULT_BOX)
     )
 
 
-def test_fill_text_box_with_invalid_email(driver: WebDriver):
-    driver.get("https://qa-guru.github.io/one-page-form/text-box.html")
+@pytest.mark.regression
+def test_fill_text_box_with_invalid_email(text_box_page: TextBoxPage):
+    text_box_page.visit()
 
-    full_name_field = driver.find_element(By.ID, "userName")
-    full_name_field.send_keys("John Doe")
-
-    email_field = driver.find_element(By.ID, "userEmail")
-    email_field.send_keys("?")
-
-    current_address_area = driver.find_element(By.ID, "currentAddress")
-    current_address_area.send_keys("740 Route 202 Middletown, NY 10940")
-
-    permanent_address_area = driver.find_element(By.ID, "permanentAddress")
-    permanent_address_area.send_keys(
-        "9476 Virginia Avenue South Richmond Hill, NY 11419"
+    text_box_page.fill_text_box(
+        fullname="John Doe",
+        email="?",
+        current_address="740 Route 202 Middletown, NY 10940",
+        permanent_address="9476 Virginia Avenue South Richmond Hill, NY 11419",
     )
+    text_box_page.click_submit_button()
 
-    submit_button = driver.find_element(By.ID, "submit")
-    submit_button.click()
-
-    result_box = driver.find_elements(By.CSS_SELECTOR, "div#output > *")
-
-    assert len(result_box) == 0
+    assert text_box_page.is_result_box_hidden()
 
 
-def test_sql_inject_username_field(driver: WebDriver):
-    driver.get("https://qa-guru.github.io/one-page-form/text-box.html")
+@pytest.mark.regression
+def test_sql_inject_username_field(text_box_page: TextBoxPage):
+    text_box_page.visit()
 
-    full_name_field = driver.find_element(By.ID, "userName")
-    full_name_field.send_keys("'1' OR '1'='1")
-
-    email_field = driver.find_element(By.ID, "userEmail")
-    email_field.send_keys("john_doe@gmail.com")
-
-    current_address_area = driver.find_element(By.ID, "currentAddress")
-    current_address_area.send_keys("740 Route 202 Middletown, NY 10940")
-
-    permanent_address_area = driver.find_element(By.ID, "permanentAddress")
-    permanent_address_area.send_keys(
-        "9476 Virginia Avenue South Richmond Hill, NY 11419"
+    text_box_page.fill_text_box(
+        fullname="'1' OR '1'='1",
+        email="john_doe@gmail.com",
+        current_address="740 Route 202 Middletown, NY 10940",
+        permanent_address="9476 Virginia Avenue South Richmond Hill, NY 11419",
     )
-
-    submit_button = driver.find_element(By.ID, "submit")
-    submit_button.click()
-
-    result_box = driver.find_elements(By.CSS_SELECTOR, "div#output > *")
+    text_box_page.click_submit_button()
 
     # This check is pointless, and in a real system, a validation error would occur in the username field.
     # However, since there is no validation in this form, let's assume that we're entering the data as-is, but without a successful SQL injection.
-    assert len(result_box) > 0
+    assert text_box_page.is_result_box_visible()

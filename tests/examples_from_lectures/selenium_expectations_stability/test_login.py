@@ -38,18 +38,27 @@ def driver():
         # --- ПОЗИТИВНЫЕ СЦЕНАРИИ ---
         ("qaguru@qa.guru", "qaguru", "positive", "Вы успешно вошли"),
         ("QAGURU@QA.GURU", "qaguru", "positive", "Вы успешно вошли"),
-
         # --- НЕГАТИВНЫЕ СЦЕНАРИИ ---
         ("qaguru@qa.guru", "wrong_pass", "negative", "Неверный пароль"),
-        ("unknown@qa.guru", "qaguru", "negative", "Такого пользователя не существует"),
+        (
+            "unknown@qa.guru",
+            "qaguru",
+            "negative",
+            "Такого пользователя не существует",
+        ),
         ("", "qaguru", "negative", "Заполните поле Email"),
         ("qaguru@qa.guru", "", "negative", "Заполните поле Пароль"),
         ("", "", "negative", "Заполните поля"),
-        ("qaguruqa.guru", "qaguru", "negative", "Email должен содержать символ @"),
+        (
+            "qaguruqa.guru",
+            "qaguru",
+            "negative",
+            "Email должен содержать символ @",
+        ),
         ("qaguru@", "qaguru", "negative", "Введен некорректный Email"),
         ("@qa.guru", "qaguru", "negative", "Введен некорректный Email"),
         ("qaguru' OR '1'='1", "' OR '1'='1", "negative", "Некорректные данные"),
-    ]
+    ],
 )
 def test_login_form(driver, email, password, scenario_type, expected_text):
     """Тест кейс, принимающий наборы данных (DDT)."""
@@ -90,10 +99,17 @@ def test_login_form(driver, email, password, scenario_type, expected_text):
     except ElementNotVisibleException:
         # Если алерта нет, ищем текст ошибки на самой странице
         actual_result = driver.find_element(*STATUS_MESSAGE).text
-        print(f"Allert-а нет, поэтому мы ищем тест с ошибкой комментарием на странице, текст: {actual_result}")
+        print(
+            f"Allert-а нет, поэтому мы ищем тест с ошибкой комментарием на странице, текст: {actual_result}"
+        )
 
     # 6. Проверка результата (Assertion)
     if scenario_type == "positive":
-        assert expected_text in actual_result, f"Ожидался успешный вход, но получено: '{actual_result}'"  # "Wrong login or password"
+        assert (
+            expected_text in actual_result
+        ), f"Ожидался успешный вход, но получено: '{actual_result}'"  # "Wrong login or password"
     else:
-        assert expected_text in actual_result or driver.current_url != "success_url", f"Форма пропустила некорректные данные: Email='{email}', Pass='{password}'"
+        assert (
+            expected_text in actual_result
+            or driver.current_url != "success_url"
+        ), f"Форма пропустила некорректные данные: Email='{email}', Pass='{password}'"

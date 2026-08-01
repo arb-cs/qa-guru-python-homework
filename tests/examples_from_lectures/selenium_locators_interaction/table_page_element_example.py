@@ -15,7 +15,9 @@ class TableElement:
 
     def get_headers(self) -> list[str]:
         """Возвращает список заголовков таблицы."""
-        header_elements = self.element.find_elements(By.CSS_SELECTOR, "thead th")
+        header_elements = self.element.find_elements(
+            By.CSS_SELECTOR, "thead th"
+        )
         return [header.text for header in header_elements]
 
     def get_row_data(self, row_index: int) -> list[str]:
@@ -41,7 +43,9 @@ def test_original(driver: WebDriver):
     # Сбор данных для демонстрации
     headers = table.get_headers()
     first_row = table.get_row_data(0)
-    specific_cell = table.get_cell_value(row_index=2, column_index=3)  # Строка 3, Колонка 4 (Due)
+    specific_cell = table.get_cell_value(
+        row_index=2, column_index=3
+    )  # Строка 3, Колонка 4 (Due)
 
     # Вывод результатов в консоль
     print("Заголовки таблицы:", headers)
@@ -51,7 +55,9 @@ def test_original(driver: WebDriver):
     # Простые проверки (Assertions)
     assert "Last Name" in headers, "Заголовок 'Last Name' не найден"
     assert "Smith" in first_row, "Фамилия 'Smith' должна быть в первой строке"
-    assert specific_cell == "$100.00", f"Ожидалось $100.00, но получено {specific_cell}"
+    assert (
+        specific_cell == "$100.00"
+    ), f"Ожидалось $100.00, но получено {specific_cell}"
 
     print("\n✅ Тест успешно пройден!")
     time.sleep(5)
@@ -61,11 +67,17 @@ def test_second_table(driver: WebDriver):
     driver.implicitly_wait(5)
     driver.get("https://the-internet.herokuapp.com/tables")
 
-    last_name = driver.find_element(By.CSS_SELECTOR, "tr:nth-child(1) td.last-name")
-    first_name = driver.find_element(By.CSS_SELECTOR, "tr:nth-child(1) td.first-name")
+    last_name = driver.find_element(
+        By.CSS_SELECTOR, "tr:nth-child(1) td.last-name"
+    )
+    first_name = driver.find_element(
+        By.CSS_SELECTOR, "tr:nth-child(1) td.first-name"
+    )
     email = driver.find_element(By.CSS_SELECTOR, "tr:nth-child(1) td.email")
     due = driver.find_element(By.CSS_SELECTOR, "tr:nth-child(1) td.dues")
-    web_site = driver.find_element(By.CSS_SELECTOR, "tr:nth-child(1) td.web-site")
+    web_site = driver.find_element(
+        By.CSS_SELECTOR, "tr:nth-child(1) td.web-site"
+    )
 
     assert last_name.text == "Smith"
     assert first_name.text == "John"
@@ -78,11 +90,19 @@ def test_both_tables(driver: WebDriver):
     driver.implicitly_wait(5)
     driver.get("https://the-internet.herokuapp.com/tables")
 
-    last_name_first_table = driver.find_element(By.XPATH, "//table[@id='table1']/tbody/tr[1]/td[1]")
-    first_name_first_table = driver.find_element(By.XPATH, "//table[@id='table1']/tbody/tr[1]/td[2]")
+    last_name_first_table = driver.find_element(
+        By.XPATH, "//table[@id='table1']/tbody/tr[1]/td[1]"
+    )
+    first_name_first_table = driver.find_element(
+        By.XPATH, "//table[@id='table1']/tbody/tr[1]/td[2]"
+    )
 
-    last_name_second_table = driver.find_element(By.XPATH, "//table[@id='table2']/tbody/tr[1]/td[1]")
-    first_name_second_table = driver.find_element(By.XPATH, "//table[@id='table2']/tbody/tr[1]/td[2]")
+    last_name_second_table = driver.find_element(
+        By.XPATH, "//table[@id='table2']/tbody/tr[1]/td[1]"
+    )
+    first_name_second_table = driver.find_element(
+        By.XPATH, "//table[@id='table2']/tbody/tr[1]/td[2]"
+    )
 
     assert last_name_first_table.text == last_name_second_table.text
     assert first_name_first_table.text == first_name_second_table.text
