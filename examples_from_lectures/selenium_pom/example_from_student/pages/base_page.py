@@ -4,7 +4,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 from selenium.webdriver.support import expected_conditions as ec
 from selenium.webdriver.support.ui import WebDriverWait
 
-from tests.examples_from_lectures.selenium_pom.example_from_student.pages.elements.calendar import (
+from components import (
     Calendar,
 )
 

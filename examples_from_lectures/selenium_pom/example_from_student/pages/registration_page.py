@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 
-from tests.examples_from_lectures.selenium_pom.example_from_student.pages.base_page import (
+from pages.base_page import (
     BasePage,
 )
 
@@ -49,7 +49,7 @@ class RegistrationPage(BasePage):
     DATE_INPUT = (By.CSS_SELECTOR, "#dateOfBirthInput")
     DAY_OPTION = (
         By.CSS_SELECTOR,
-        "div.react-datepicker__day--0{padded_day}:not(.react-datepicker__day--outside-month)",
+        "div.react-datepicker__day--0{padded_day}:not(.react-datepicker__day--outside-select_month)",
     )
     YEAR_SELECT = (
         By.CSS_SELECTOR,

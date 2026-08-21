@@ -1,6 +1,6 @@
 from selenium.webdriver.common.by import By
 
-from tests.examples_from_lectures.selenium_pom.example_from_student.pages.base_page import (
+from pages.base_page import (
     BasePage,
 )
 

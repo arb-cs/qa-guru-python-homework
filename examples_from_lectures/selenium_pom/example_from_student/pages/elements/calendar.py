@@ -13,7 +13,7 @@ class Calendar:
         )
         self.DAY_OPTION = (
             By.CSS_SELECTOR,
-            "div.react-datepicker__day--0{padded_day}:not(.react-datepicker__day--outside-month)",
+            "div.react-datepicker__day--0{padded_day}:not(.react-datepicker__day--outside-select_month)",
         )
         self.YEAR_SELECT = (
             By.CSS_SELECTOR,

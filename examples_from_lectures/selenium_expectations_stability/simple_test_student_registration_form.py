@@ -122,10 +122,10 @@ class TestAutomationForm(unittest.TestCase):
         year_select.find_element(By.XPATH, "//option[@value='1995']").click()
 
         # Выбираем конкретный день месяца (например, 25-е число)
-        # Используем специальный класс react-datepicker__day--025, исключая дни соседних месяцев (outside-month)
+        # Используем специальный класс react-datepicker__day--025, исключая дни соседних месяцев (outside-select_month)
         day_element = driver.find_element(
             By.CSS_SELECTOR,
-            ".react-datepicker__day--025:not(.react-datepicker__day--outside-month)",
+            ".react-datepicker__day--025:not(.react-datepicker__day--outside-select_month)",
         )
         day_element.click()
 
