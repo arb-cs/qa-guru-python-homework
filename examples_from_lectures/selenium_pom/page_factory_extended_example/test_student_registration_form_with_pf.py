@@ -1,58 +1,12 @@
 import os
 
-import pytest
-from selenium import webdriver
 from selenium.webdriver.common.by import By
 from selenium.webdriver.common.keys import Keys
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.support.wait import WebDriverWait
 from seleniumpagefactory.Pagefactory import PageFactory
 
-# 1. Специфика реализации PageFactory в экосистеме Python
-# В отличие от Java, где локаторы инициализируются через аннотации `@FindBy`, в Python библиотека `selenium-page-factory` реализует динамический дескриптор.
-# Все локаторы описываются в словаре `locators`.
-# При обращении к элементу через `self.first_name` библиотека автоматически перехватывает обращение, производит неявный поиск элемента на основе кортежа `('ID', 'firstName')` и возвращает обертку над `WebElement` с расширенными методами (`set_text()`, `click_button()`, `select_element_by_value()`).
 
-# 2. Работа со сложными кастомными веб-виджетами
-# Современные веб-приложения практически не используют стандартные HTML-теги `<select>`. Форма QA Guru построена на базе библиотек экосистемы React (React-Select и React-DatePicker):
-# Календарь (DatePicker): Вместо прямой отправки текста в текстовое поле (что часто блокируется или вызывает баги валидации), скрипт имитирует поведение реального пользователя: открывает кликом календарь, взаимодействует с селекторами месяца/года и рассчитывает XPATH для клика по точному дню.
-# Кастомные селекты (State / City): Стандартный метод Selenium `.select_by_text()` здесь выбросит исключение. В коде демонстрируется обходной путь: фокус на поле ввода виджета (`state_input`), отправка текста и программная посылка клавиши `Keys.ENTER` для срабатывания триггеров фреймворка React.
-
-# 3. Безопасное взаимодействие через JavaScript Execution
-# При автоматизации реальных интерфейсов элементы часто перекрываются плавающими баннерами, футерами или сторонней рекламой, что вызывает ошибку `ElementClickInterceptedException`.
-# Метод `page.submit_form()` демонстрирует использование инъекции JavaScript: `self.driver.execute_script("arguments[0].click();", self.submit_button)`. Это позволяет инициировать событие отправки формы в обход физических ограничений графического слоя браузера.
-
-# 4. Парсинг табличных структур (Data Extraction)
-# Метод `get_modal_results` обучает конвертировать сырой HTML-код структуры таблицы (`<table> -> <tbody> -> <tr> -> <td>`) в стандартные структуры данных Python (словари `dict`). Это закладывает базу для написания гибких и поддерживаемых ассертов (проверок) без жесткой привязки к индексам элементов.
-
-
-# ==============================================================================
-# 1. КОНФИГУРАЦИЯ ТЕСТОВОЙ СРЕДЫ (pytest fixture)
-# ==============================================================================
-@pytest.fixture(scope="function")
-def driver():
-    """Инициализация WebDriver с безопасными флагами для CI/CD и демонстраций."""
-    # chrome_options = Options()
-    # chrome_options.add_argument("--start-maximized")
-    # chrome_options.add_argument("--disable-extensions")
-    # chrome_options.add_argument("--headless=new")  # Для фонового запуска студентов
-
-    # Решение проблем с памятью в Docker/стесненных средах обучения
-    # chrome_options.add_argument("--no-sandbox")
-    # chrome_options.add_argument("--disable-dev-shm-usage")
-
-    # driver = webdriver.Chrome(options=chrome_options)
-
-    driver = webdriver.Chrome()
-    driver.maximize_window()
-    # driver.implicitly_wait = 10
-    yield driver
-    driver.quit()
-
-
-# ==============================================================================
-# 2. БАЗОВЫЙ КЛАСС СТРАНИЦЫ (Интеграция PageFactory)
-# ==============================================================================
 class BasePage(PageFactory):
     """Абстрактный класс для расширения возможностей стандартной PageFactory."""
 
@@ -66,21 +20,9 @@ class BasePage(PageFactory):
         self.driver.get(url)
 
 
-# ==============================================================================
-# 3. КЛАСС СТРАНИЦЫ ФОРМЫ (Реализация паттерна PageFactory)
-# ==============================================================================
 class AutomationPracticeFormPage(BasePage):
-    """
-    Класс страницы формы. Демонстрирует декларативное описание локаторов
-    и инкапсуляцию сложного взаимодействия с веб-элементами.
-    """
-
     def __init__(self, driver):
         super().__init__(driver)
-
-        # Декларативная мапа локаторов (Специфика паттерна PageFactory в Python)
-        # Формат: 'название_элемента': (тип_локатора, 'значение_локатора')
-        # NOTE: обратите внимание - инициализация вне конструктора, реальная работа по первому обращению (lazy initialization)
 
     locators = {
         "first_name": ("ID", "firstName"),
@@ -90,48 +32,38 @@ class AutomationPracticeFormPage(BasePage):
             "XPATH",
             "//div[@id='fixedban']//button[@aria-label='Close']",
         ),
-        # Радиокнопки выбора пола (локаторы на кликабельные label)
         "gender_male": ("XPATH", "//label[@for='gender-radio-1']"),
         "gender_female": ("XPATH", "//label[@for='gender-radio-2']"),
         "gender_other": ("XPATH", "//label[@for='gender-radio-3']"),
         "user_number": ("ID", "userNumber"),
-        # Компоненты виджета календаря (DatePicker)
         "date_of_birth_input": ("ID", "dateOfBirthInput"),
         "calendar_month_select": (
             "CLASS_NAME",
             "react-datepicker__month-select",
         ),
         "calendar_year_select": ("CLASS_NAME", "react-datepicker__year-select"),
-        # Поле автодополнения (кастомный выпадающий список)
         "subjects_input": ("ID", "subjectsInput"),
         "subjects_auto_complete_option": (
             "XPATH",
             "//div[contains(@class, 'subjects-auto-complete__option')]",
         ),
-        # Чекбоксы хобби (локаторы на кликабельные label)
         "hobby_sports": ("XPATH", "//label[@for='hobbies-checkbox-1']"),
         "hobby_reading": ("XPATH", "//label[@for='hobbies-checkbox-2']"),
         "hobby_music": ("XPATH", "//label[@for='hobbies-checkbox-3']"),
-        # Загрузка файлов и адресный блок
         "upload_picture_btn": ("ID", "uploadPicture"),
         "current_address": ("ID", "currentAddress"),
-        # Кастомные выпадающие списки (React-Select) штата и города
         "state_dropdown": ("ID", "state"),
         "state_input": ("XPATH", "//div[@id='state']//input"),
         "city_dropdown": ("ID", "city"),
         "city_input": ("XPATH", "//div[@id='city']//input"),
         "submit_button": ("ID", "submit"),
-        # Модальное окно подтверждения результатов отправки
         "modal_title": ("ID", "example-modal-sizes-title-lg"),
         "modal_table_rows": ("XPATH", "//*[@id='resultBody']//tr"),
     }
 
-    def _close_commercial_banner(self):
+    def close_commercial_banner(self):
         self.banner_button.click()
 
-    # --------------------------------------------------------------------------
-    # Бизнес-методы (Действия на странице)
-    # --------------------------------------------------------------------------
     def set_first_name(self, first_name):
         self.first_name.set_text(first_name)
 
@@ -227,9 +159,6 @@ class AutomationPracticeFormPage(BasePage):
         return result_data
 
 
-# ==============================================================================
-# 4. ТЕСТОВЫЙ СЦЕНАРИЙ (Бизнес-логика проверки)
-# ==============================================================================
 def test_student_registration_form_max_capabilities(driver):
     test_filename = "demo_upload.txt"
     with open(test_filename, "w") as f:
@@ -241,7 +170,7 @@ def test_student_registration_form_max_capabilities(driver):
         "https://qa-guru.github.io/one-page-form/automation-practice-form.html"
     )
 
-    page._close_commercial_banner()
+    page.close_commercial_banner()
     page.set_first_name("Ivan")
     page.set_last_name("Ivanov")
     page.set_email("ivanov@university.edu")
