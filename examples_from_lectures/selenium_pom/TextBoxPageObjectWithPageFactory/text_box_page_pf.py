@@ -1,16 +1,15 @@
 from seleniumpagefactory.Pagefactory import PageFactory
 
-# pip install selenium-page-factory
-
 
 class TextBoxPage(PageFactory):
-    URL = "https://qa-guru.github.io/one-page-form/text-box.html"  # Частный случай
+    URL = "https://qa-guru.github.io/one-page-form/text-box.html"
 
     def __init__(self, driver):
+        super().__init__()
         self.driver = driver
         self.locators = {
             "full_name_input": ("ID", "userName"),
-            "email_input": ("ID", "userEmail"),
+            "email_input": ("CSS", "#userEmail"),
             "current_address_input": ("ID", "currentAddress"),
             "permanent_address_input": ("ID", "permanentAddress"),
             "submit_button": ("ID", "submit"),
@@ -35,18 +34,15 @@ class TextBoxPage(PageFactory):
             self.permanent_address_input.send_keys(perm_addr)
 
     def submit(self):
-        # Прокрутка до кнопки и клик через JS, если перекрыта футером
         self.driver.execute_script(
             "arguments[0].scrollIntoView(true);", self.submit_button
         )
         self.submit_button.click()
 
     def get_output_data(self):
-        # Возвращает текст из блока вывода, если он появился
         if not self.output_box.is_displayed():
-            return None
+            return False
 
-        # Парсинг строк (удаляем префиксы вроде 'Name:')
         name = self.output_name.text.replace("Name:", "").strip()
         email = self.output_email.text.replace("Email:", "").strip()
         cur_addr = self.output_current_address.text.replace(
@@ -64,8 +60,7 @@ class TextBoxPage(PageFactory):
         }
 
     def is_email_error_present(self):
-        # Проверяем наличие класса ошибки у поля Email
-        field_class = self.email_input.get_attribute("class")
-        # TypeError: argument of type 'NoneType' is not a container or iterable
-        # TODO: как нужно обновить - исправить проверку?
-        return "field-error" in field_class or "error" in field_class or False
+        field_attribute = self.email_input.get_attribute("validationMessage")
+        if field_attribute:
+            return True
+        return False
