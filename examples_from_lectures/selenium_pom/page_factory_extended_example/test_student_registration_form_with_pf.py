@@ -8,8 +8,6 @@ from seleniumpagefactory.Pagefactory import PageFactory
 
 
 class BasePage(PageFactory):
-    """Абстрактный класс для расширения возможностей стандартной PageFactory."""
-
     def __init__(self, driver):
         super().__init__()
         self.driver = driver
