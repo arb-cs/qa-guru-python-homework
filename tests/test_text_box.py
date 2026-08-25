@@ -1,6 +1,6 @@
 import pytest
 
-from examples_from_lectures.selenium_pom.TextBoxPageObjectWithPageFactory.text_box_page_pf import (
+from pages.text_box_page_pf import (
     TextBoxPage,
 )
 
