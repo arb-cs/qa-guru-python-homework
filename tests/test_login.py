@@ -9,17 +9,13 @@ from pages.login_page import LoginPage
     "login, password, error_message",
     [
         ("johndoe@gmail.com", "JoH!?Do1+", "Wrong login or password"),
-        (
-            "",
-            "",
-            "Login and password are required (minimum 3 and 6 characters)",
-        ),
+        ("", "", "Login and password are required (minimum 3 and 6 characters)"),
         ("", "JoH!?Do1+", "Login is required (minimum 3 characters)"),
         ("johndoe", "", "Password is required (minimum 6 characters)"),
-    ],
+    ], ids=["unregistered_user", "empty fields", "empty login", "empty password"]
 )
 def test_unsuccessful_login(
-    login_page: LoginPage, login, password, error_message
+        login_page: LoginPage, login, password, error_message
 ):
     (
         login_page.open()

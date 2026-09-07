@@ -7,7 +7,7 @@ from utils.dates import format_date
 @pytest.mark.regression
 @pytest.mark.registration
 def test_fill_only_required_fields(
-    student_registration_page: StudentRegistrationPage,
+        student_registration_page: StudentRegistrationPage,
 ):
     (
         student_registration_page.open()

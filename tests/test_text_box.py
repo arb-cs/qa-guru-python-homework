@@ -22,8 +22,8 @@ def test_fill_text_box(text_box_page: TextBoxPage):
     assert result["Email"] == "john_doe@gmail.com"
     assert result["Current Address"] == "740 Route 202 Middletown, NY 10940"
     assert (
-        result["Permananet Address"]
-        == "9476 Virginia Avenue South Richmond Hill, NY 11419"
+            result["Permananet Address"]
+            == "9476 Virginia Avenue South Richmond Hill, NY 11419"
     )
 
 
