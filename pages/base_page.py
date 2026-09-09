@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.remote.webdriver import WebDriver
 
 from core.driver_actions import DriverActions
@@ -9,6 +10,7 @@ class BasePage:
         self.driver = driver
         self.actions = DriverActions(driver)
 
+    @allure.step("Open the page.")
     def open(self):
         if not self.url:
             raise ValueError("Page has not URL defined.")
@@ -16,5 +18,6 @@ class BasePage:
         self.driver.get(self.url)
         return self
 
+    @allure.step("Reload the page.")
     def reload(self):
         self.driver.refresh()

@@ -1,3 +1,4 @@
+import allure
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -34,63 +35,64 @@ class StudentRegistrationPage(BasePage):
     RESULT_MODAL = (By.ID, "resultModal")
     RESULT_TABLE_ELEMENTS = (By.XPATH, "//*[@id='resultBody']//tr")
 
+    @allure.step("Enter your first name.")
     def set_firstname(self, firstname: str):
         self.actions.fill(self.FIRSTNAME_INPUT, firstname)
-        return self
 
+    @allure.step("Enter your last name.")
     def set_lastname(self, lastname: str):
         self.actions.fill(self.LASTNAME_INPUT, lastname)
-        return self
 
+    @allure.step("Enter your email address.")
     def set_email(self, email: str):
         self.actions.fill(self.USER_EMAIL_INPUT, email)
-        return self
 
+    @allure.step("Enter your mobile phone number.")
     def set_phone(self, phone: str):
         self.actions.fill(self.PHONE_NUMBER_INPUT, phone)
-        return self
 
+    @allure.step("Select your gender.")
     def set_gender(self, gender: str):
         self.gender_checkbox.select(gender)
-        return self
 
+    @allure.step("Enter your birthdate.")
     def set_birthdate(self, month, year, day):
         self.actions.click(self.BIRTHDAY_INPUT)
         self.calendar.set_date(month, year, day)
-        return self
 
+    @allure.step("Select subjects that you would like to study.")
     def set_subject(self, subject: str):
         self.subjects_dropdown.select(subject)
-        return self
 
+    @allure.step("Select your hobbies.")
     def set_hobby(self, hobby: str):
         self.hobbies_checkbox.select(hobby)
-        return self
 
+    @allure.step("Upload a personal photo for the application.")
     def upload_picture(self, relative_path: str):
         self.actions.upload_file(self.UPLOAD_PICTURE_INPUT, relative_path)
-        return self
 
+    @allure.step("Enter your current address.")
     def set_current_address(self, address: str):
         self.actions.fill(self.CURRENT_ADDRESS_AREA, address)
-        return self
 
+    @allure.step("Select your state.")
     def set_state(self, state: str):
         self.state_dropdown.select(state)
-        return self
 
+    @allure.step("Select your city.")
     def set_city(self, city: str):
         self.city_dropdown.select(city)
-        return self
 
+    @allure.step("Close the ad banner.")
     def close_ad_banner(self):
         self.actions.click(self.CLOSE_BANNER_BUTTON)
-        return self
 
+    @allure.step("Click the submit button.")
     def submit_form(self):
         self.actions.click(self.SUBMIT_BUTTON)
-        return self
 
+    @allure.step("Get the result table after submitting the form.")
     def get_result_table(self) -> dict:
         rows = self.actions.find_all(self.RESULT_TABLE_ELEMENTS)
         result = {}
@@ -103,5 +105,6 @@ class StudentRegistrationPage(BasePage):
 
         return result
 
+    @allure.step("Check whether the result table is displayed.")
     def is_result_modal_displayed(self) -> bool:
         return self.actions.is_displayed(self.RESULT_MODAL)

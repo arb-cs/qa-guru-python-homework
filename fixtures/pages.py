@@ -1,3 +1,4 @@
+import allure
 import pytest
 from selenium.webdriver.remote.webdriver import WebDriver
 
@@ -7,6 +8,7 @@ from pages.text_box_page import TextBoxPage
 
 
 @pytest.fixture
+@allure.title("Create an instance of TextBoxPage class.")
 def text_box_page(driver: WebDriver) -> TextBoxPage:
     return TextBoxPage(
         driver, "https://qa-guru.github.io/one-page-form/text-box.html"
@@ -14,6 +16,7 @@ def text_box_page(driver: WebDriver) -> TextBoxPage:
 
 
 @pytest.fixture
+@allure.title("Create an instance of LoginPage class.")
 def login_page(driver: WebDriver) -> LoginPage:
     return LoginPage(
         driver, "https://qa-guru.github.io/one-page-form/login.html"
@@ -21,6 +24,7 @@ def login_page(driver: WebDriver) -> LoginPage:
 
 
 @pytest.fixture
+@allure.title("Create an instance of StudentRegistrationPage class.")
 def student_registration_page(driver: WebDriver) -> StudentRegistrationPage:
     return StudentRegistrationPage(
         driver,

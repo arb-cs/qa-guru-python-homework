@@ -1,3 +1,4 @@
+import allure
 import pytest
 
 from pages.login_page import LoginPage
@@ -14,14 +15,13 @@ from pages.login_page import LoginPage
         ("johndoe", "", "Password is required (minimum 6 characters)"),
     ], ids=["unregistered_user", "empty fields", "empty login", "empty password"]
 )
-def test_unsuccessful_login(
-        login_page: LoginPage, login, password, error_message
-):
-    (
-        login_page.open()
-        .fill_login(login)
-        .fill_password(password)
-        .click_login_button()
-    )
+@allure.feature("Authentication")
+@allure.severity(allure.severity_level.BLOCKER)
+@allure.description("This test attempts to log into the system using incorrect credentials.")
+def test_unsuccessful_login(login_page: LoginPage, login, password, error_message):
+    login_page.open()
+    login_page.fill_login(login)
+    login_page.fill_password(password)
+    login_page.click_login_button()
 
     assert login_page.check_error_message(error_message)
