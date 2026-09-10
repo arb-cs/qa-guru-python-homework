@@ -1,3 +1,4 @@
+import allure
 from selenium.common import TimeoutException
 from selenium.webdriver.common.by import By
 from selenium.webdriver.remote.webdriver import WebDriver
@@ -17,25 +18,27 @@ class TextBoxPage(BasePage):
     RESULT_BOX = (By.ID, "output")
     RESULT_OUTPUT_ELEMENTS = (By.XPATH, "//div[@id = 'output']//p")
 
+    @allure.step("Enter your full name.")
     def fill_fullname(self, fullname: str):
         self.actions.fill(self.FULL_NAME_INPUT, fullname)
-        return self
 
+    @allure.step("Enter your email.")
     def fill_email(self, email: str):
         self.actions.fill(self.EMAIL_INPUT, email)
-        return self
 
+    @allure.step("Enter your current address.")
     def fill_current_address(self, current_address: str):
         self.actions.fill(self.CURRENT_ADDRESS_AREA, current_address)
-        return self
 
+    @allure.step("Enter your permanent address.")
     def fill_permanent_address(self, permanent_address: str):
         self.actions.fill(self.PERMANENT_ADDRESS_AREA, permanent_address)
-        return self
 
+    @allure.step("Click the submit button.")
     def click_submit_button(self):
         self.actions.click(self.SUBMIT_BUTTON)
 
+    @allure.step("Get the result box.")
     def get_output(self):
         rows = self.actions.find_all(self.RESULT_OUTPUT_ELEMENTS)
 
@@ -46,6 +49,7 @@ class TextBoxPage(BasePage):
 
         return result
 
+    @allure.step("Verify that the result box is visible.")
     def is_result_box_visible(self) -> bool:
         try:
             self.actions.find_visible(self.RESULT_BOX)
@@ -53,6 +57,7 @@ class TextBoxPage(BasePage):
         except TimeoutException:
             return False
 
+    @allure.step("Verify that the result box is hidden.")
     def is_result_box_hidden(self) -> bool:
         try:
             self.actions.find_invisible(self.RESULT_BOX)

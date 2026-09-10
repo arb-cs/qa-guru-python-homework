@@ -1,3 +1,11 @@
+[tool.pytest.ini_options]
+addopts = "--alluredir=allure-results"
+markers = [
+    "regression: all tests in the regression suite",
+    "authorization: tests to verify authorization",
+    "registration: tests to verify registration"
+]
+
 [tool.black]
 line-length = 80
 exclude = '''
