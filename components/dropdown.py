@@ -9,6 +9,7 @@ class Dropdown:
         self.root_locator = root_locator
 
     def select(self, text: str):
+        self.actions.scroll_into_view(self.root_locator)
         self.actions.click(self.root_locator)
         option = (By.XPATH, f"//div[text()='{text}']")
         self.actions.scroll_into_view(option)
