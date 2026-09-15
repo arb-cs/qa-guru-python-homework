@@ -49,7 +49,7 @@ def driver(request, load_env) -> WebDriver:
 
         command_executor = remote.replace(
             "https://",
-            f"https://{selenoid_login}:{selenoid_password}@{remote}"
+            f"https://{selenoid_login}:{selenoid_password}@"
         )
 
         driver = webdriver.Remote(
