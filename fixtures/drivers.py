@@ -24,6 +24,7 @@ def driver(request, load_env) -> WebDriver:
         browser_version = request.config.getoption("--browser-version")
         is_headless = request.config.getoption("--headless").lower() == "true"
         screen_resolution = request.config.getoption("--screen-resolution")
+        screen_resolution = screen_resolution.replace("x", ",")
 
         if browser_name == "chrome":
             options = webdriver.ChromeOptions()
