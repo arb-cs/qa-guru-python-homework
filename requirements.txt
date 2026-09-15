@@ -1,3 +1,4 @@
+pip==26.2.1
 pytest==9.1.1
 selenium==4.49.0
 allure-pytest==2.16.0
