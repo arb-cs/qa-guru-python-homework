@@ -1,6 +1,9 @@
 pytest==9.1.1
 selenium==4.49.0
 allure-pytest==2.16.0
+allure-python-commons==2.16.0
 pre-commit==4.6.2
 flake8==7.3.0
-allure-python-commons
+black==26.5.1
+isort==9.0.1
+python-dotenv==1.2.3
