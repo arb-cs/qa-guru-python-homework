@@ -22,7 +22,7 @@ def driver(request, load_env) -> WebDriver:
 
         browser_name = request.config.getoption("--browser")
         browser_version = request.config.getoption("--browser-version")
-        is_headless = request.config.getoption("--headless")
+        is_headless = request.config.getoption("--headless").lower() == "true"
         screen_resolution = request.config.getoption("--screen-resolution")
 
         if browser_name == "chrome":

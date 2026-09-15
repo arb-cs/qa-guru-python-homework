@@ -9,7 +9,7 @@ def pytest_addoption(parser):
     parser.addoption("--selenoid-url", default=None)
     parser.addoption("--browser", default="chrome", choices=("chrome", "firefox", "msedge"))
     parser.addoption("--browser-version", default="148.0")
-    parser.addoption("--headless", action="store_true")
+    parser.addoption("--headless", default="false")
     parser.addoption("--screen-resolution", default="1920x1080",
                      choices=("1366x768", "1440x900", "1920x1080", "2560x1440"))
     parser.addoption("--environment", default=None)
