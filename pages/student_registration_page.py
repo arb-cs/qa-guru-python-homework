@@ -57,6 +57,7 @@ class StudentRegistrationPage(BasePage):
 
     @allure.step("Enter your birthdate.")
     def set_birthdate(self, month, year, day):
+        self.actions.scroll_into_view(self.BIRTHDAY_INPUT)
         self.actions.click(self.BIRTHDAY_INPUT)
         self.calendar.set_date(month, year, day)
 
@@ -90,6 +91,7 @@ class StudentRegistrationPage(BasePage):
 
     @allure.step("Click the submit button.")
     def submit_form(self):
+        self.actions.scroll_into_view(self.SUBMIT_BUTTON)
         self.actions.click(self.SUBMIT_BUTTON)
 
     @allure.step("Get the result table after submitting the form.")
