@@ -1,5 +1,3 @@
-from typing import Any, Generator
-
 import allure
 import pytest
 from selenium import webdriver
@@ -9,7 +7,7 @@ from selenium.webdriver.remote.webdriver import WebDriver
 
 @pytest.fixture
 @allure.title("Instantiate a driver for tests.")
-def driver() -> Generator[WebDriver, Any, None]:
+def driver() -> WebDriver:
     driver = webdriver.Chrome()
     driver.maximize_window()
 
@@ -20,7 +18,7 @@ def driver() -> Generator[WebDriver, Any, None]:
 
 @pytest.fixture
 @allure.title("Create an instance of the driver to which the window size can be passed.")
-def desktop_driver(request) -> Generator[WebDriver, Any, None]:
+def desktop_driver(request) -> WebDriver:
     width, height = request.param
 
     if width < 1280:
@@ -36,37 +34,32 @@ def desktop_driver(request) -> Generator[WebDriver, Any, None]:
 
 @pytest.fixture()
 @allure.title("Create an instance of a driver for tests that check the website’s responsiveness.")
-def mobile_driver():
-    driver = None
+def mobile_driver(request) -> WebDriver:
+    width, height = request.param
 
-    def _create_driver(width, height):
-        nonlocal driver
-        if driver is not None:
-            return driver
+    if width >= 1024:
+        pytest.skip("The screen width is not suitable for mobile devices.")
 
-        mobile_emulation = {
-            "deviceMetrics": {
-                "width": width,
-                "height": height,
-                "pixelRatio": 3.0,
-                "mobile": True,
-                "touch": True
-            },
-            "userAgent": (
-                "Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/AP2A.240905.003) "
-                "AppleWebKit/537.36 (KHTML, like Gecko) "
-                "Chrome/148.0.0.0 Mobile Safari/537.36"
-            ),
-            "clientHints": {"platform": "Android", "mobile": True}
-        }
+    mobile_emulation = {
+        "deviceMetrics": {
+            "width": width,
+            "height": height,
+            "pixelRatio": 3.0,
+            "mobile": True,
+            "touch": True
+        },
+        "userAgent": (
+            "Mozilla/5.0 (Linux; Android 14; Pixel 8 Build/AP2A.240905.003) "
+            "AppleWebKit/537.36 (KHTML, like Gecko) "
+            "Chrome/148.0.0.0 Mobile Safari/537.36"
+        ),
+        "clientHints": {"platform": "Android", "mobile": True}
+    }
 
-        options = Options()
-        options.add_experimental_option("mobileEmulation", mobile_emulation)
+    options = Options()
+    options.add_experimental_option("mobileEmulation", mobile_emulation)
+    driver = webdriver.Chrome(options=options)
 
-        driver = webdriver.Chrome(options=options)
-        return driver
+    yield driver
 
-    yield _create_driver
-
-    if driver:
-        driver.quit()
+    driver.quit()
